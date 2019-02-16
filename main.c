@@ -8,7 +8,7 @@
 
 typedef struct {
     size_t size;
-    char *content;
+    uint8_t *content;
 } raw_file;
 
 typedef struct {
@@ -16,7 +16,7 @@ typedef struct {
 } disk_header;
 
 typedef struct {
-    char filename[12];
+    uint8_t filename[12];
     uint8_t _unknown;
     uint16_t size;
     uint32_t offset;
@@ -44,7 +44,7 @@ void* consume_(raw_file *file, uint32_t size)
     return result;
 }
 
-void writeFile(const char *filename, const char *at, uint32_t size)
+void writeFile(const char *filename, const uint8_t *at, uint32_t size)
 {
     FILE *fp = fopen(filename, "wb");
     if(!fp) { fprintf(stderr, "Could not open file %s...\n", filename); exit(EXIT_FAILURE); }
@@ -55,11 +55,11 @@ void writeFile(const char *filename, const char *at, uint32_t size)
 
 void extractDisk(raw_file file, const char *out_dir)
 {
-    char *start = file.content;
+    uint8_t *start = file.content;
     disk_header *header = consume(&file, disk_header);
     for(int i = 0; i < header->numEntries; ++i) {
         file_record *record = consume(&file, file_record);
-        char fnbuffer[1024];
+        uint8_t fnbuffer[1024];
         sprintf(fnbuffer, "%s/%s", out_dir, record->filename);
         writeFile(fnbuffer, start + record->offset, record->size);
     }
