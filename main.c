@@ -16,7 +16,7 @@ typedef struct {
 } disk_header;
 
 typedef struct {
-    uint8_t filename[12];
+    char filename[12];
     uint8_t _unknown;
     uint16_t size;
     uint32_t offset;
